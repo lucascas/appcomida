@@ -96,7 +96,6 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('saveCategoryButton').addEventListener('click', saveCategory);
 });
 
-
 // Función para renderizar una comida individual
 function renderComida(comida) {
     if (!comida.nombre || !comida.categoria) {
@@ -111,6 +110,7 @@ function renderComida(comida) {
             <div class="card-content">
                 <p class="title is-4">${comida.nombre}</p>
                 <p class="subtitle is-6">${comida.categoria}</p>
+                <p>${comida.ingredientes}</p>
             </div>
             <footer class="card-footer">
                 <div class="card-footer-item">
@@ -133,8 +133,6 @@ function renderComida(comida) {
     return comidaElement;
 }
 
-
-
 // Función para cargar las comidas desde el servidor
 function loadComidas() {
     fetch('get_comidas.php')
@@ -149,7 +147,6 @@ function loadComidas() {
             comidasList.innerHTML = '<p>Error al cargar las comidas.</p>';
         });
 }
-
 
 // Función para renderizar todas las comidas
 function renderComidas() {
