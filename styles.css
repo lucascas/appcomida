@@ -156,3 +156,11 @@ body {
         margin: 0.25rem 0;
     }
 }
+/* Estilos adicionales para el popup en pasos */
+#step2 {
+    display: none;
+}
+
+.field.is-grouped {
+    margin-bottom: 1rem;
+}

@@ -54,78 +54,72 @@
         <div class="modal-content">
             <div class="box">
                 <h3 class="title is-4">Agregar a:</h3>
-                <form id="addToMenuForm">
-                    <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="lunes_almuerzo">
-                            Lunes Almuerzo
-                        </label>
+                <div id="step1">
+                    <form id="selectDayForm">
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="lunes_almuerzo"> Lunes Almuerzo
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="lunes_cena"> Lunes Cena
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="martes_almuerzo"> Martes Almuerzo
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="martes_cena"> Martes Cena
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="miercoles_almuerzo"> Miercoles Almuerzo
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="miercoles_cena"> Miercoles Cena
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="jueves_almuerzo"> Jueves Almuerzo
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="jueves_cena"> Jueves Cena
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="viernes_almuerzo"> Viernes Almuerzo
+                            </label>
+                        </div>
+                        <div class="field">
+                            <label class="radio">
+                                <input type="radio" name="menuSlot" value="viernes_cena"> Viernes Cena
+                            </label>
+                        </div>
+                        <div class="field">
+                            <button type="button" class="button is-primary" id="nextStep">Siguiente</button>
+                        </div>
+                    </form>
+                </div>
+                <div id="step2" style="display:none;">
+                    <h4 class="title is-5">Ingredientes que faltan:</h4>
+                    <div id="ingredientList">
+                        <!-- Lista de ingredientes generada dinámicamente -->
                     </div>
                     <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="lunes_cena">
-                            Lunes Cena
-                        </label>
+                        <button type="button" class="button is-primary" id="addComida">Agregar</button>
                     </div>
-
-                    <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="martes_almuerzo">
-                            Martes Almuerzo
-                        </label>
-                    </div>
-                    <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="martes_cena">
-                            Martes Cena
-                        </label>
-                    </div>
-
-                    <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="miercoles_almuerzo">
-                            Miercoles Almuerzo
-                        </label>
-                    </div>
-                    <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="miercoles_cena">
-                            Miercoles Cena
-                        </label>
-                    </div>
-
-                    <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="jueves_almuerzo">
-                            Jueves Almuerzo
-                        </label>
-                    </div>
-                    <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="jueves_cena">
-                            Jueves Cena
-                        </label>
-                    </div>
-
-                    <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="viernes_almuerzo">
-                            Viernes Almuerzo
-                        </label>
-                    </div>
-                    <div class="field">
-                        <label class="radio">
-                            <input type="radio" name="menuSlot" value="viernes_cena">
-                            Viernes Cena
-                        </label>
-                    </div>
-
-
-                    <!-- Agrega más opciones para los otros días -->
-                    <div class="field">
-                        <button type="submit" class="button is-primary">Agregar</button>
-                    </div>
-                </form>
+                </div>
             </div>
         </div>
         <button class="modal-close is-large" aria-label="close"></button>

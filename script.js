@@ -114,7 +114,7 @@ function renderComida(comida) {
             </div>
             <footer class="card-footer">
                 <div class="card-footer-item">
-                    <button class="button is-primary add-to-plan">Agregar al plan</button>
+                    <button class="button is-primary add-to-plan" data-ingredientes="${comida.ingredientes}">Agregar al plan</button>
                     <button class="button is-info edit-category" data-comida-id="${comida.id}">Editar categoría</button>
                 </div>
             </footer>
@@ -123,7 +123,7 @@ function renderComida(comida) {
 
     // Agregar eventos de clic a los botones de "Agregar al plan" y "Editar categoría"
     comidaElement.querySelector('.add-to-plan').addEventListener('click', () => {
-        showPopupForComida(comida.nombre);
+        showPopupForComida(comida.nombre, comida.ingredientes);
     });
 
     comidaElement.querySelector('.edit-category').addEventListener('click', () => {
@@ -167,19 +167,62 @@ function renderComidas() {
 }
 
 // Función para mostrar el popup de agregar comida al plan
-function showPopupForComida(comida) {
+function showPopupForComida(comida, ingredientes) {
     const popup = document.getElementById('popupOverlay');
     popup.style.display = 'block';
     
-    const form = document.getElementById('addToMenuForm');
-    form.onsubmit = function(e) {
-        e.preventDefault();
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const ingredientList = document.getElementById('ingredientList');
+    ingredientList.innerHTML = '';
+
+    const ingredientsArray = ingredientes.split(',').map(ingredient => ingredient.trim());
+    ingredientsArray.forEach(ingredient => {
+        const ingredientItem = document.createElement('div');
+        ingredientItem.classList.add('field', 'is-grouped');
+        ingredientItem.innerHTML = `
+            <div class="control">
+                <label class="checkbox">
+                    <input type="checkbox" class="ingredient-checkbox" value="${ingredient}"> ${ingredient}
+                </label>
+            </div>
+        `;
+        ingredientList.appendChild(ingredientItem);
+    });
+
+    step1.style.display = 'block';
+    step2.style.display = 'none';
+
+    document.getElementById('nextStep').addEventListener('click', () => {
+        step1.style.display = 'none';
+        step2.style.display = 'block';
+    });
+
+    document.getElementById('addComida').addEventListener('click', () => {
         const selectedSlot = document.querySelector('input[name="menuSlot"]:checked');
         if (selectedSlot) {
             addToPlan(selectedSlot.value, comida);
         }
+
+        const selectedIngredients = document.querySelectorAll('.ingredient-checkbox:checked');
+        const ingredientsToBuy = Array.from(selectedIngredients).map(checkbox => checkbox.value);
+        const comprarSuperTextarea = document.getElementById('comprar_super');
+
+        // Obtener los ingredientes actuales en el textarea
+        const currentIngredients = comprarSuperTextarea.value.split('\n').map(ing => ing.trim()).filter(ing => ing !== '');
+        
+        // Agregar los nuevos ingredientes si no están en la lista actual
+        ingredientsToBuy.forEach(ingredient => {
+            if (!currentIngredients.includes(ingredient)) {
+                currentIngredients.push(ingredient);
+            }
+        });
+
+        // Actualizar el textarea con la lista actualizada de ingredientes
+        comprarSuperTextarea.value = currentIngredients.join('\n');
+
         popup.style.display = 'none';
-    };
+    });
 }
 
 // Función para agregar una comida al plan
@@ -224,10 +267,10 @@ function saveCategory() {
 
 // Agregar eventos de cierre de modal
 document.querySelector('.modal-close').addEventListener('click', () => {
-    document.getElementById('categoryPopup').classList.remove('is-active');
+    document.getElementById('popupOverlay').style.display = 'none';
 });
 document.querySelector('.modal-background').addEventListener('click', () => {
-    document.getElementById('categoryPopup').classList.remove('is-active');
+    document.getElementById('popupOverlay').style.display = 'none';
 });
 
 // Función para filtrar las comidas por categoría

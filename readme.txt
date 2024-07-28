@@ -126,3 +126,17 @@ categoría
 ingredientes
 
 Idear 5 opciones de almuerzos y cenas , en la columna "nombre" asignarle nombre, en la columna "categória" asignarle si es carne, pollo, pastas o pescado, en la columna ingredientes, sumar los ingredientes y armar la consulta 
+
+
+
+
+Sobre los archivos adjuntos, quiero que hagas los ajustes necesarios segun las siguientes indicaciones:
+
+1) cuando se agrega una comida desde "Comidas de Planes Anteriores", al momento de abrir el popup divdir en dos pasos:
+Paso 1, seleccionar día (donde se desplegarán todos los días)
+Paso 2, Ingredientes que faltan: se mostraran dos columnas, en una columna el ingrediente y en otra columna "agregar a compras?" que tendrá un checkbox. Si está marcado, ese ingrediente se debe agregar al textbox "comprar en el super" dentro de "Planificador de Comidas Semanal
+" 
+Una vez finalizado, habrá un botón que dirá "agregar" y agregará la comida al día correspondiente y el ingrediente que es necesario comprar al textbox "comprar en el super"
+
+
+a medida que se vayan agregando comidas e ingredientes, en el textbox debe ir en forma de listado uno debajo del otro.
