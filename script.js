@@ -1,22 +1,27 @@
+// Función para enviar los datos del formulario al servidor y enviar un correo electrónico.
 function sendData() {
-    const formData = new FormData(document.getElementById('mealPlanForm'));
+    const form = document.getElementById('mealPlanForm');
+    const formData = new FormData(form);
     const data = {};
     const emailParams = {
         to_email: 'lucas.castillo@gmail.com, lucas.castillo@invera.com.ar'
     };
 
+    // Recorre los campos del formulario y añade al objeto de datos y parámetros de correo.
     for (let [key, value] of formData.entries()) {
         data[key] = value;
         emailParams[key] = value || 'No especificado';
     }
 
-    // Agregar la fecha actual
     const now = new Date();
-    const days = ['Domingo', 'Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes', 'Sábado'];
+    const days = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
     data.fecha_creacion = `${days[now.getDay()]} ${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
     emailParams.fecha_creacion = data.fecha_creacion;
 
-    // Guardar en la base de datos
+    // Asegúrate de que comprar_super esté incluido en los datos
+    data.comprar_super = document.getElementById('comprar_super').value || '';
+
+    // Enviar los datos al servidor
     fetch('save_plan.php', {
         method: 'POST',
         headers: {
@@ -26,9 +31,12 @@ function sendData() {
     })
     .then(response => response.json())
     .then(result => {
-        console.log('Plan guardado en la base de datos:', result);
-        // Continuar con el envío del email
-        return emailjs.send('service_0isjz8r', 'template_oe1o3vo', emailParams, 'su7bu8tVLFRR-ssfd');
+        if (result.message === 'Plan saved successfully') {
+            console.log('Plan guardado en la base de datos:', result);
+            return emailjs.send('service_0isjz8r', 'template_oe1o3vo', emailParams, 'su7bu8tVLFRR-ssfd');
+        } else {
+            throw new Error(result.message);
+        }
     })
     .then((response) => {
         console.log('Correo enviado con éxito:', response);
@@ -41,9 +49,42 @@ function sendData() {
     });
 }
 
+// Evento DOMContentLoaded para inicializar la página una vez que se cargue el DOM
 document.addEventListener('DOMContentLoaded', () => {
+    const weekdays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
+    const weekdaysContainer = document.getElementById('weekdays');
+
+    // Genera dinámicamente los campos de entrada para cada día de la semana
+    weekdays.forEach(day => {
+        const dayCard = `
+            <div class="day-card">
+                <h2 class="subtitle">${day}</h2>
+                <div class="field">
+                    <label class="label">Almuerzo:</label>
+                    <div class="control">
+                        <input class="input" type="text" name="${day.toLowerCase()}_almuerzo">
+                    </div>
+                </div>
+                <div class="field">
+                    <label class="label">Cena:</label>
+                    <div class="control">
+                        <input class="input" type="text" name="${day.toLowerCase()}_cena">
+                    </div>
+                </div>
+            </div>
+        `;
+        weekdaysContainer.innerHTML += dayCard;
+    });
+
+    const form = document.getElementById('mealPlanForm');
+    form.addEventListener('submit', (e) => {
+        e.preventDefault();
+        sendData();
+    });
+
     loadComidas();
 
+    // Agregar evento de clic a los botones de categoría
     const categoryButtons = document.querySelectorAll('.category-button');
     categoryButtons.forEach(button => {
         button.addEventListener('click', function() {
@@ -55,28 +96,21 @@ document.addEventListener('DOMContentLoaded', () => {
     document.getElementById('saveCategoryButton').addEventListener('click', saveCategory);
 });
 
-function loadComidas() {
-    fetch('get_comidas.php')
-        .then(response => response.json())
-        .then(comidas => {
-            window.comidas = comidas; // Almacenar las comidas globalmente
-            renderComidas();
-        })
-        .catch(error => {
-            console.error('Error:', error);
-            const comidasList = document.getElementById('comidasList');
-            comidasList.innerHTML = '<p>Error al cargar las comidas.</p>';
-        });
-}
 
+// Función para renderizar una comida individual
 function renderComida(comida) {
+    if (!comida.nombre || !comida.categoria) {
+        // Si el nombre o la categoría están indefinidos, no mostrar
+        return;
+    }
+
     const comidaElement = document.createElement('div');
     comidaElement.classList.add('column', 'is-one-third');
     comidaElement.innerHTML = `
         <div class="card">
             <div class="card-content">
                 <p class="title is-4">${comida.nombre}</p>
-                <p class="subtitle is-6">${comida.categoria.join(', ')}</p>
+                <p class="subtitle is-6">${comida.categoria}</p>
             </div>
             <footer class="card-footer">
                 <div class="card-footer-item">
@@ -87,6 +121,7 @@ function renderComida(comida) {
         </div>
     `;
 
+    // Agregar eventos de clic a los botones de "Agregar al plan" y "Editar categoría"
     comidaElement.querySelector('.add-to-plan').addEventListener('click', () => {
         showPopupForComida(comida.nombre);
     });
@@ -98,20 +133,43 @@ function renderComida(comida) {
     return comidaElement;
 }
 
+
+
+// Función para cargar las comidas desde el servidor
+function loadComidas() {
+    fetch('get_comidas.php')
+        .then(response => response.json())
+        .then(comidas => {
+            window.comidas = comidas;
+            renderComidas();
+        })
+        .catch(error => {
+            console.error('Error:', error);
+            const comidasList = document.getElementById('comidasList');
+            comidasList.innerHTML = '<p>Error al cargar las comidas.</p>';
+        });
+}
+
+
+// Función para renderizar todas las comidas
 function renderComidas() {
     const comidasList = document.getElementById('comidasList');
     comidasList.innerHTML = '';
 
     const selectedCategory = document.querySelector('.category-button.is-selected')?.dataset.category;
 
+    // Filtrar y mostrar las comidas según la categoría seleccionada
     window.comidas.forEach(comida => {
-        if (!selectedCategory || comida.categoria.includes(selectedCategory)) {
+        if (!selectedCategory || selectedCategory === 'Ver Todos' || comida.categoria.includes(selectedCategory)) {
             const comidaElement = renderComida(comida);
-            comidasList.appendChild(comidaElement);
+            if (comidaElement) {
+                comidasList.appendChild(comidaElement);
+            }
         }
     });
 }
 
+// Función para mostrar el popup de agregar comida al plan
 function showPopupForComida(comida) {
     const popup = document.getElementById('popupOverlay');
     popup.style.display = 'block';
@@ -127,6 +185,7 @@ function showPopupForComida(comida) {
     };
 }
 
+// Función para agregar una comida al plan
 function addToPlan(slot, comida) {
     const input = document.querySelector(`input[name="${slot}"]`);
     if (input) {
@@ -134,12 +193,14 @@ function addToPlan(slot, comida) {
     }
 }
 
+// Función para mostrar el popup de edición de categoría
 function showCategoryPopup(comidaId) {
     const popup = document.getElementById('categoryPopup');
     popup.classList.add('is-active');
     document.getElementById('saveCategoryButton').dataset.comidaId = comidaId;
 }
 
+// Función para guardar la categoría de una comida
 function saveCategory() {
     const popup = document.getElementById('categoryPopup');
     const checkboxes = document.querySelectorAll('.category-select:checked');
@@ -164,6 +225,7 @@ function saveCategory() {
     });
 }
 
+// Agregar eventos de cierre de modal
 document.querySelector('.modal-close').addEventListener('click', () => {
     document.getElementById('categoryPopup').classList.remove('is-active');
 });
@@ -171,6 +233,7 @@ document.querySelector('.modal-background').addEventListener('click', () => {
     document.getElementById('categoryPopup').classList.remove('is-active');
 });
 
+// Función para filtrar las comidas por categoría
 function filterComidasByCategory(category) {
     document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('is-selected'));
     const selectedButton = document.querySelector(`.category-button[data-category="${category}"]`);

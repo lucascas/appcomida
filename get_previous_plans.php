@@ -1,47 +1,34 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-
-/* Conexión local */
-$host = "localhost";
+// Conexión a la base de datos
+$servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "meal_planner";
 
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-/* Conexión servidor 
-
-
-$servername = "sql105.infinityfree.com";
-$username = "if0_36943803";
-$password = "9HiF8jHuRJqHZsj";
-$dbname = "if0_36943803_comidassemanales";
-*/
-
-$sql = "SELECT *, fecha_creacion FROM weekly_plans ORDER BY id DESC LIMIT 5";
-
-// Crear conexión
-$conn = new mysqli($host, $username, $password, $dbname);
-
-// Verificar conexión
+// Verificar la conexión
 if ($conn->connect_error) {
-    die(json_encode(["error" => "Connection failed: " . $conn->connect_error]));
+    die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Consulta SQL para obtener los planes anteriores
-$sql = "SELECT * FROM weekly_plans ORDER BY id DESC LIMIT 50"; // Obtiene los últimos 5 planes
-
+// Consulta para obtener los planes anteriores
+$sql = "SELECT lunes_almuerzo, lunes_cena, martes_almuerzo, martes_cena, miercoles_almuerzo, miercoles_cena, jueves_almuerzo, jueves_cena, viernes_almuerzo, viernes_cena, comprar_super, fecha_creación, categoria FROM weekly_plans";
 $result = $conn->query($sql);
 
+$planes = array();
+
+// Recorrer los resultados y agregarlos al array de planes
 if ($result->num_rows > 0) {
-    $plans = [];
     while($row = $result->fetch_assoc()) {
-        $plans[] = $row;
+        $planes[] = $row;
     }
-    echo json_encode($plans);
 } else {
     echo json_encode([]);
+    exit();
 }
+
+echo json_encode($planes);
 
 $conn->close();
 ?>

@@ -1,51 +1,32 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Access-Control-Allow-Headers: Content-Type");
-header("Content-Type: application/json; charset=UTF-8");
-
-
-/* Conexión local  */
-$host = "localhost";
+// Conexión a la base de datos
+$servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "meal_planner";
 
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-/* Conexión servidor 
-
-
-$servername = "sql105.infinityfree.com";
-$username = "if0_36943803";
-$password = "9HiF8jHuRJqHZsj";
-$dbname = "if0_36943803_comidassemanales";
- */
-// Crear conexión
-$conn = new mysqli($host, $username, $password, $dbname);
-
-// Verificar conexión
+// Verificar la conexión
 if ($conn->connect_error) {
-    die(json_encode(["error" => "Connection failed: " . $conn->connect_error]));
+    die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Obtener datos del POST
-$data = json_decode(file_get_contents("php://input"), true);
+// Obtener los datos enviados desde el frontend
+$data = json_decode(file_get_contents('php://input'), true);
 
-$sql = "INSERT INTO weekly_plans (lunes_almuerzo, lunes_cena, martes_almuerzo, martes_cena, miercoles_almuerzo, miercoles_cena, jueves_almuerzo, jueves_cena, viernes_almuerzo, viernes_cena, comprar_super, fecha_creacion) VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
+// Preparar la consulta SQL
+$sql = "INSERT INTO weekly_plans (lunes_almuerzo, lunes_cena, martes_almuerzo, martes_cena, miercoles_almuerzo, miercoles_cena, jueves_almuerzo, jueves_cena, viernes_almuerzo, viernes_cena, comprar_super, fecha_creación)
+        VALUES (?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?, ?)";
 
 $stmt = $conn->prepare($sql);
-$stmt->bind_param("ssssssssssss", 
-    $data['lunes_almuerzo'], $data['lunes_cena'],
-    $data['martes_almuerzo'], $data['martes_cena'],
-    $data['miercoles_almuerzo'], $data['miercoles_cena'],
-    $data['jueves_almuerzo'], $data['jueves_cena'],
-    $data['viernes_almuerzo'], $data['viernes_cena'],
-    $data['comprar_super'], $data['fecha_creacion']
-);
+$stmt->bind_param("ssssssssssss", $data['lunes_almuerzo'], $data['lunes_cena'], $data['martes_almuerzo'], $data['martes_cena'], $data['miercoles_almuerzo'], $data['miercoles_cena'], $data['jueves_almuerzo'], $data['jueves_cena'], $data['viernes_almuerzo'], $data['viernes_cena'], $data['comprar_super'], $data['fecha_creación']);
 
+// Ejecutar la consulta
 if ($stmt->execute()) {
-    echo json_encode(["message" => "Plan saved successfully", "id" => $conn->insert_id]);
+    echo json_encode(["message" => "Plan saved successfully"]);
 } else {
-    echo json_encode(["error" => "Error saving the plan: " . $stmt->error]);
+    echo json_encode(["message" => "Error: " . $stmt->error]);
 }
 
 $stmt->close();

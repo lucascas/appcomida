@@ -1,23 +1,34 @@
 <?php
-include 'conexion.php';
+// Conexión a la base de datos
+$servername = "localhost";
+$username = "root";
+$password = "";
+$dbname = "meal_planner";
 
-$input = file_get_contents("php://input");
-$data = json_decode($input, true);
-$comidaId = $data['comidaId'];
-$categories = $data['categories'];
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-if (isset($comidaId) && isset($categories)) {
-    $categoryString = implode(',', $categories);
-    $query = "UPDATE comidas SET categoria='$categoryString' WHERE id='$comidaId'";
-
-    if (mysqli_query($conn, $query)) {
-        echo json_encode(["message" => "Categoría actualizada exitosamente"]);
-    } else {
-        echo json_encode(["message" => "Error al actualizar la categoría: " . mysqli_error($conn)]);
-    }
-} else {
-    echo json_encode(["message" => "Datos incompletos"]);
+// Verificar la conexión
+if ($conn->connect_error) {
+    die("Conexión fallida: " . $conn->connect_error);
 }
 
-mysqli_close($conn);
+// Obtener los datos enviados desde el frontend
+$data = json_decode(file_get_contents('php://input'), true);
+$comidaId = $data['comidaId'];
+$categories = implode(", ", $data['categories']);
+
+// Actualizar la categoría de la comida
+$sql = "UPDATE comidas SET categoria = ? WHERE id = ?";
+$stmt = $conn->prepare($sql);
+$stmt->bind_param("si", $categories, $comidaId);
+
+// Ejecutar la consulta
+if ($stmt->execute()) {
+    echo json_encode(["message" => "Categoría actualizada exitosamente"]);
+} else {
+    echo json_encode(["message" => "Error: " . $stmt->error]);
+}
+
+$stmt->close();
+$conn->close();
 ?>

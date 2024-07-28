@@ -1,52 +1,38 @@
 <?php
-header("Access-Control-Allow-Origin: *");
-header("Content-Type: application/json; charset=UTF-8");
-
-$host = "localhost";
+// Conexión a la base de datos
+$servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "meal_planner";
 
-// Crear conexión
-$conn = new mysqli($host, $username, $password, $dbname);
+$conn = new mysqli($servername, $username, $password, $dbname);
 
-// Verificar conexión
+// Verificar la conexión
 if ($conn->connect_error) {
-    die(json_encode(["error" => "Connection failed: " . $conn->connect_error]));
+    die("Conexión fallida: " . $conn->connect_error);
 }
 
-// Consulta SQL para obtener las comidas de weekly_plans
-$sql = "SELECT 
-            lunes_almuerzo, lunes_cena,
-            martes_almuerzo, martes_cena,
-            miercoles_almuerzo, miercoles_cena,
-            jueves_almuerzo, jueves_cena,
-            viernes_almuerzo, viernes_cena,
-            fecha_creacion
-        FROM weekly_plans 
-        ORDER BY fecha_creacion DESC 
-        LIMIT 10"; // Limitamos a los últimos 10 planes para no sobrecargar
-
+// Consulta para obtener todas las comidas de la tabla weekly_plans
+$sql = "SELECT lunes_almuerzo, lunes_cena, martes_almuerzo, martes_cena, miercoles_almuerzo, miercoles_cena, jueves_almuerzo, jueves_cena, viernes_almuerzo, viernes_cena, categoria FROM weekly_plans";
 $result = $conn->query($sql);
 
+$comidas = array();
+
+// Recorrer los resultados y agregarlos al array de comidas
 if ($result->num_rows > 0) {
-    $comidas = [];
     while($row = $result->fetch_assoc()) {
         foreach ($row as $key => $value) {
-            if ($key != 'fecha_creacion' && !empty($value)) {
-                $comidas[] = [
-                    'nombre' => $value,
-                    'categoria' => ucfirst(explode('_', $key)[0]), // Día de la semana
-                    'descripcion' => ucfirst(explode('_', $key)[1]) // Almuerzo o Cena
-                ];
+            if ($key != 'categoria' && !empty($value)) {
+                $comidas[] = array("nombre" => $value, "categoria" => $row['categoria']);
             }
         }
     }
-    $comidas = array_unique($comidas, SORT_REGULAR); // Eliminar duplicados
-    echo json_encode(array_values($comidas)); // Reindexar el array
 } else {
     echo json_encode([]);
+    exit();
 }
+
+echo json_encode($comidas);
 
 $conn->close();
 ?>
