@@ -42,36 +42,6 @@ function sendData() {
 }
 
 document.addEventListener('DOMContentLoaded', () => {
-    const weekdays = ['Lunes', 'Martes', 'Miércoles', 'Jueves', 'Viernes'];
-    const weekdaysContainer = document.getElementById('weekdays');
-
-    weekdays.forEach(day => {
-        const dayCard = `
-            <div class="day-card">
-                <h2 class="subtitle">${day}</h2>
-                <div class="field">
-                    <label class="label">Almuerzo:</label>
-                    <div class="control">
-                        <input class="input" type="text" name="${day.toLowerCase()}_almuerzo">
-                    </div>
-                </div>
-                <div class="field">
-                    <label class="label">Cena:</label>
-                    <div class="control">
-                        <input class="input" type="text" name="${day.toLowerCase()}_cena">
-                    </div>
-                </div>
-            </div>
-        `;
-        weekdaysContainer.innerHTML += dayCard;
-    });
-
-    const form = document.getElementById('mealPlanForm');
-    form.addEventListener('submit', (e) => {
-        e.preventDefault();
-        sendData();
-    });
-
     loadComidas();
 
     const categoryButtons = document.querySelectorAll('.category-button');
@@ -81,6 +51,8 @@ document.addEventListener('DOMContentLoaded', () => {
             filterComidasByCategory(category);
         });
     });
+
+    document.getElementById('saveCategoryButton').addEventListener('click', saveCategory);
 });
 
 function loadComidas() {
@@ -104,7 +76,7 @@ function renderComida(comida) {
         <div class="card">
             <div class="card-content">
                 <p class="title is-4">${comida.nombre}</p>
-                <p class="subtitle is-6">${comida.categoria}</p>
+                <p class="subtitle is-6">${comida.categoria.join(', ')}</p>
             </div>
             <footer class="card-footer">
                 <div class="card-footer-item">

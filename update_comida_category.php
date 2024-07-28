@@ -1,20 +1,23 @@
 <?php
-require 'database_connection.php';
+include 'conexion.php';
 
-$data = json_decode(file_get_contents('php://input'), true);
-
+$input = file_get_contents("php://input");
+$data = json_decode($input, true);
 $comidaId = $data['comidaId'];
 $categories = $data['categories'];
 
-// Convierte el array de categorías a una cadena separada por comas
-$categoriesString = implode(', ', $categories);
+if (isset($comidaId) && isset($categories)) {
+    $categoryString = implode(',', $categories);
+    $query = "UPDATE comidas SET categoria='$categoryString' WHERE id='$comidaId'";
 
-$query = $db->prepare("UPDATE comidas SET categoria = ? WHERE id = ?");
-$query->execute([$categoriesString, $comidaId]);
+    if (mysqli_query($conn, $query)) {
+        echo json_encode(["message" => "Categoría actualizada exitosamente"]);
+    } else {
+        echo json_encode(["message" => "Error al actualizar la categoría: " . mysqli_error($conn)]);
+    }
+} else {
+    echo json_encode(["message" => "Datos incompletos"]);
+}
 
-$response = [
-    'message' => 'Categoría actualizada con éxito.'
-];
-
-echo json_encode($response);
+mysqli_close($conn);
 ?>
