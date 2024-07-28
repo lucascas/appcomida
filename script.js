@@ -57,18 +57,20 @@ document.addEventListener('DOMContentLoaded', () => {
     // Genera dinámicamente los campos de entrada para cada día de la semana
     weekdays.forEach(day => {
         const dayCard = `
-            <div class="day-card">
-                <h2 class="subtitle">${day}</h2>
-                <div class="field">
-                    <label class="label">Almuerzo:</label>
-                    <div class="control">
-                        <input class="input" type="text" name="${day.toLowerCase()}_almuerzo">
+            <div class="column is-one-fifth-tablet is-one-third-mobile">
+                <div class="day-card">
+                    <h2 class="subtitle">${day}</h2>
+                    <div class="field">
+                        <label class="label">Almuerzo:</label>
+                        <div class="control">
+                            <input class="input" type="text" name="${day.toLowerCase()}_almuerzo">
+                        </div>
                     </div>
-                </div>
-                <div class="field">
-                    <label class="label">Cena:</label>
-                    <div class="control">
-                        <input class="input" type="text" name="${day.toLowerCase()}_cena">
+                    <div class="field">
+                        <label class="label">Cena:</label>
+                        <div class="control">
+                            <input class="input" type="text" name="${day.toLowerCase()}_cena">
+                        </div>
                     </div>
                 </div>
             </div>
@@ -94,6 +96,9 @@ document.addEventListener('DOMContentLoaded', () => {
     });
 
     document.getElementById('saveCategoryButton').addEventListener('click', saveCategory);
+
+    // Evento para generar el menú automáticamente
+    document.getElementById('generateMenuButton').addEventListener('click', generateMenu);
 });
 
 // Función para renderizar una comida individual
@@ -281,4 +286,32 @@ function filterComidasByCategory(category) {
         selectedButton.classList.add('is-selected');
     }
     renderComidas();
+}
+
+// Función para generar el menú automáticamente y agregar ingredientes al campo "Comprar en el super"
+function generateMenu() {
+    const weekdays = ['lunes_almuerzo', 'lunes_cena', 'martes_almuerzo', 'martes_cena', 'miercoles_almuerzo', 'miercoles_cena', 'jueves_almuerzo', 'jueves_cena', 'viernes_almuerzo', 'viernes_cena'];
+    const planInputs = weekdays.map(day => document.querySelector(`input[name="${day}"]`));
+    
+    // Limpiar los campos existentes
+    planInputs.forEach(input => input.value = '');
+
+    // Mezclar las comidas aleatoriamente y asignarlas a los campos
+    const shuffledComidas = [...window.comidas].sort(() => Math.random() - 0.5);
+    const ingredientsToBuy = [];
+
+    planInputs.forEach((input, index) => {
+        if (shuffledComidas[index]) {
+            input.value = shuffledComidas[index].nombre;
+            const ingredientes = shuffledComidas[index].ingredientes.split(',').map(ingredient => ingredient.trim());
+            ingredientes.forEach(ingredient => {
+                if (!ingredientsToBuy.includes(ingredient)) {
+                    ingredientsToBuy.push(ingredient);
+                }
+            });
+        }
+    });
+
+    const comprarSuperTextarea = document.getElementById('comprar_super');
+    comprarSuperTextarea.value = ingredientsToBuy.join('\n');
 }
