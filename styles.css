@@ -135,7 +135,6 @@ body {
     background: #555;
 }
 
-/* Asegurar que las tarjetas de los días se alineen en cinco columnas y se adapten a pantallas pequeñas */
 .columns.is-centered {
     display: flex;
     justify-content: space-between;
@@ -183,7 +182,6 @@ body {
     }
 }
 
-/* Estilos adicionales para el popup en pasos */
 #step2 {
     display: none;
 }

@@ -140,3 +140,22 @@ Una vez finalizado, habrá un botón que dirá "agregar" y agregará la comida a
 
 
 a medida que se vayan agregando comidas e ingredientes, en el textbox debe ir en forma de listado uno debajo del otro.
+
+
+Agregar debajo del titulo "Planificador de Comidas Semanal" un botón que genere el menu de todos los días automaticamente basándose en las comidas almacenadas en "Comidas de Planes Anteriores"
+
+
+
+
+
+
+
+Por favor realizar las siguientes modificaciones:
+
+1) Generar un administrador que se podrá acceder por usuario (email) y contraseña (basica solo numeros)
+2) dentro de ese administrador se podrá configrar a quienes se les puede enviar el menú (maximo 5 opciones)
+
+Por favor realizar las siguientes modificaciones:
+1) por cada campo (almuerzo, cena) dentro de la card con el día agregar una opcion con el icono de actualizar en el borde superior derecho con el texto "+ opciones"
+2) por cada campo (almuerzo, cena) agregar la opción de editar.
+3) al hacer click en la opcion editar en el punto anterior, se desplgará un popup con un listado de todas las opciones de comidas que hay en "Comidas de Planes Anteriores". Al seleccionar una opción, se pasará a un segndo paso que indicará los ingredientes si hacen falta agregarlos a las compras. En este punto habrá un botón de agregar y eso modificará el campo y agregará los ingredientes que hacen falta y eliminará los ingredientes que estaban agregados de la opcin anterior de esa opcion de menu.

@@ -33,12 +33,20 @@
 
     <div id="comidasContainer" class="container">
         <h2 class="title is-2 has-text-centered">Comidas de Planes Anteriores</h2>
-        <div class="categories-tree">
-            <button class="button category-button" data-category="Ver Todos">Ver Todos</button>
-            <button class="button category-button" data-category="Carnes">Carnes</button>
-            <button class="button category-button" data-category="Pollo">Pollo</button>
-            <button class="button category-button" data-category="Pescado">Pescado</button>
-            <button class="button category-button" data-category="Pastas">Pastas</button>
+        <div class="columns is-vcentered">
+            <div class="column">
+                <input type="text" id="searchComidas" class="input" placeholder="Buscar comida...">
+            </div>
+            <div class="column">
+                <div class="categories-tree">
+                    <button class="button category-button" data-category="Ver Todos">Ver Todos</button>
+                    <button class="button category-button" data-category="Carnes">Carnes</button>
+                    <button class="button category-button" data-category="Pollo">Pollo</button>
+                    <button class="button category-button" data-category="Pescado">Pescado</button>
+                    <button class="button category-button" data-category="Pastas">Pastas</button>
+                    <button class="button category-button" data-category="Vegetariano">Vegetariano</button>
+                </div>
+            </div>
         </div>
         <div id="comidasList" class="columns is-multiline">
             <!-- Las comidas se generarán dinámicamente con JavaScript -->
@@ -49,63 +57,14 @@
         <div class="modal-background"></div>
         <div class="modal-content">
             <div class="box">
-                <h3 class="title is-4">Agregar a:</h3>
+                <h3 class="title is-4">Seleccionar comida:</h3>
                 <div id="step1">
-                    <form id="selectDayForm">
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="lunes_almuerzo"> Lunes Almuerzo
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="lunes_cena"> Lunes Cena
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="martes_almuerzo"> Martes Almuerzo
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="martes_cena"> Martes Cena
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="miercoles_almuerzo"> Miércoles Almuerzo
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="miercoles_cena"> Miércoles Cena
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="jueves_almuerzo"> Jueves Almuerzo
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="jueves_cena"> Jueves Cena
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="viernes_almuerzo"> Viernes Almuerzo
-                            </label>
-                        </div>
-                        <div class="field">
-                            <label class="radio">
-                                <input type="radio" name="menuSlot" value="viernes_cena"> Viernes Cena
-                            </label>
-                        </div>
-                        <div class="field">
-                            <button type="button" class="button is-primary" id="nextStep">Siguiente</button>
-                        </div>
-                    </form>
+                    <div id="comidasOptions" class="field">
+                        <!-- Opciones de comidas se generarán dinámicamente -->
+                    </div>
+                    <div class="field">
+                        <button type="button" class="button is-primary" id="nextStep">Siguiente</button>
+                    </div>
                 </div>
                 <div id="step2" style="display:none;">
                     <h4 class="title is-5">Ingredientes que faltan:</h4>
@@ -146,12 +105,18 @@
                         <input type="checkbox" class="category-select" value="Pastas"> Pastas
                     </label>
                 </div>
+                <div class="field">
+                    <label class="checkbox">
+                        <input type="checkbox" class="category-select" value="Vegetariano"> Vegetariano
+                    </label>
+                </div>
                 <button id="saveCategoryButton" class="button is-primary">Guardar</button>
             </div>
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
     </div>
 
+    <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="script.js"></script>
 </body>
 </html>

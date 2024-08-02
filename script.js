@@ -1,76 +1,39 @@
-// Función para enviar los datos del formulario al servidor y enviar un correo electrónico.
-function sendData() {
-    const form = document.getElementById('mealPlanForm');
-    const formData = new FormData(form);
-    const data = {};
-    const emailParams = {
-        to_email: 'lucas.castillo@gmail.com, lucas.castillo@invera.com.ar'
-    };
-
-    // Recorre los campos del formulario y añade al objeto de datos y parámetros de correo.
-    for (let [key, value] of formData.entries()) {
-        data[key] = value;
-        emailParams[key] = value || 'No especificado';
-    }
-
-    const now = new Date();
-    const days = ['Domingo', 'Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes', 'Sábado'];
-    data.fecha_creacion = `${days[now.getDay()]} ${now.getDate().toString().padStart(2, '0')}/${(now.getMonth() + 1).toString().padStart(2, '0')}/${now.getFullYear()}`;
-    emailParams.fecha_creacion = data.fecha_creacion;
-
-    // Asegúrate de que comprar_super esté incluido en los datos
-    data.comprar_super = document.getElementById('comprar_super').value || '';
-
-    // Enviar los datos al servidor
-    fetch('save_plan.php', {
-        method: 'POST',
-        headers: {
-            'Content-Type': 'application/json',
-        },
-        body: JSON.stringify(data),
-    })
-    .then(response => response.json())
-    .then(result => {
-        if (result.message === 'Plan saved successfully') {
-            console.log('Plan guardado en la base de datos:', result);
-            return emailjs.send('service_0isjz8r', 'template_oe1o3vo', emailParams, 'su7bu8tVLFRR-ssfd');
-        } else {
-            throw new Error(result.message);
-        }
-    })
-    .then((response) => {
-        console.log('Correo enviado con éxito:', response);
-        alert('Planificación guardada y enviada con éxito');
-    })
-    .catch((error) => {
-        console.error('Error:', error);
-        logError('Error al guardar o enviar la planificación', error);
-        alert('Error al guardar o enviar la planificación. Por favor, intente nuevamente.');
-    });
-}
-
-// Evento DOMContentLoaded para inicializar la página una vez que se cargue el DOM
 document.addEventListener('DOMContentLoaded', () => {
     const weekdays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
     const weekdaysContainer = document.getElementById('weekdays');
 
-    // Genera dinámicamente los campos de entrada para cada día de la semana
     weekdays.forEach(day => {
         const dayCard = `
             <div class="column is-one-fifth-tablet is-one-third-mobile">
                 <div class="day-card">
                     <h2 class="subtitle">${day}</h2>
-                    <div class="field">
-                        <label class="label">Almuerzo:</label>
-                        <div class="control">
+                    <div class="field has-addons">
+                        <p class="control is-expanded">
+                            <label class="label">Almuerzo:</label>
                             <input class="input" type="text" name="${day.toLowerCase()}_almuerzo">
-                        </div>
+                        </p>
+                        <p class="control">
+                            <button class="button is-small is-info edit-meal" data-day="${day.toLowerCase()}" data-meal="almuerzo">
+                                <span class="icon is-small">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                                <span>+ opciones</span>
+                            </button>
+                        </p>
                     </div>
-                    <div class="field">
-                        <label class="label">Cena:</label>
-                        <div class="control">
+                    <div class="field has-addons">
+                        <p class="control is-expanded">
+                            <label class="label">Cena:</label>
                             <input class="input" type="text" name="${day.toLowerCase()}_cena">
-                        </div>
+                        </p>
+                        <p class="control">
+                            <button class="button is-small is-info edit-meal" data-day="${day.toLowerCase()}" data-meal="cena">
+                                <span class="icon is-small">
+                                    <i class="fas fa-edit"></i>
+                                </span>
+                                <span>+ opciones</span>
+                            </button>
+                        </p>
                     </div>
                 </div>
             </div>
@@ -86,25 +49,33 @@ document.addEventListener('DOMContentLoaded', () => {
 
     loadComidas();
 
-    // Agregar evento de clic a los botones de categoría
-    const categoryButtons = document.querySelectorAll('.category-button');
-    categoryButtons.forEach(button => {
+    document.querySelectorAll('.category-button').forEach(button => {
         button.addEventListener('click', function() {
             const category = this.getAttribute('data-category');
             filterComidasByCategory(category);
         });
     });
 
+    document.querySelectorAll('.edit-meal').forEach(button => {
+        button.addEventListener('click', function() {
+            const day = this.getAttribute('data-day');
+            const meal = this.getAttribute('data-meal');
+            showEditMealPopup(day, meal);
+        });
+    });
+
     document.getElementById('saveCategoryButton').addEventListener('click', saveCategory);
 
-    // Evento para generar el menú automáticamente
     document.getElementById('generateMenuButton').addEventListener('click', generateMenu);
+
+    document.getElementById('searchComidas').addEventListener('input', function() {
+        const query = this.value.toLowerCase();
+        filterComidasBySearch(query);
+    });
 });
 
-// Función para renderizar una comida individual
 function renderComida(comida) {
     if (!comida.nombre || !comida.categoria) {
-        // Si el nombre o la categoría están indefinidos, no mostrar
         return;
     }
 
@@ -126,7 +97,6 @@ function renderComida(comida) {
         </div>
     `;
 
-    // Agregar eventos de clic a los botones de "Agregar al plan" y "Editar categoría"
     comidaElement.querySelector('.add-to-plan').addEventListener('click', () => {
         showPopupForComida(comida.nombre, comida.ingredientes);
     });
@@ -138,7 +108,6 @@ function renderComida(comida) {
     return comidaElement;
 }
 
-// Función para cargar las comidas desde el servidor
 function loadComidas() {
     fetch('get_comidas.php')
         .then(response => response.json())
@@ -153,14 +122,12 @@ function loadComidas() {
         });
 }
 
-// Función para renderizar todas las comidas
 function renderComidas() {
     const comidasList = document.getElementById('comidasList');
     comidasList.innerHTML = '';
 
     const selectedCategory = document.querySelector('.category-button.is-selected')?.dataset.category;
 
-    // Filtrar y mostrar las comidas según la categoría seleccionada
     window.comidas.forEach(comida => {
         if (!selectedCategory || selectedCategory === 'Ver Todos' || comida.categoria.includes(selectedCategory)) {
             const comidaElement = renderComida(comida);
@@ -171,7 +138,6 @@ function renderComidas() {
     });
 }
 
-// Función para mostrar el popup de agregar comida al plan
 function showPopupForComida(comida, ingredientes) {
     const popup = document.getElementById('popupOverlay');
     popup.style.display = 'block';
@@ -213,24 +179,20 @@ function showPopupForComida(comida, ingredientes) {
         const ingredientsToBuy = Array.from(selectedIngredients).map(checkbox => checkbox.value);
         const comprarSuperTextarea = document.getElementById('comprar_super');
 
-        // Obtener los ingredientes actuales en el textarea
         const currentIngredients = comprarSuperTextarea.value.split('\n').map(ing => ing.trim()).filter(ing => ing !== '');
         
-        // Agregar los nuevos ingredientes si no están en la lista actual
         ingredientsToBuy.forEach(ingredient => {
             if (!currentIngredients.includes(ingredient)) {
                 currentIngredients.push(ingredient);
             }
         });
 
-        // Actualizar el textarea con la lista actualizada de ingredientes
         comprarSuperTextarea.value = currentIngredients.join('\n');
 
         popup.style.display = 'none';
     });
 }
 
-// Función para agregar una comida al plan
 function addToPlan(slot, comida) {
     const input = document.querySelector(`input[name="${slot}"]`);
     if (input) {
@@ -238,14 +200,12 @@ function addToPlan(slot, comida) {
     }
 }
 
-// Función para mostrar el popup de edición de categoría
 function showCategoryPopup(comidaId) {
     const popup = document.getElementById('categoryPopup');
     popup.classList.add('is-active');
     document.getElementById('saveCategoryButton').dataset.comidaId = comidaId;
 }
 
-// Función para guardar la categoría de una comida
 function saveCategory() {
     const popup = document.getElementById('categoryPopup');
     const checkboxes = document.querySelectorAll('.category-select:checked');
@@ -270,7 +230,6 @@ function saveCategory() {
     });
 }
 
-// Agregar eventos de cierre de modal
 document.querySelector('.modal-close').addEventListener('click', () => {
     document.getElementById('popupOverlay').style.display = 'none';
 });
@@ -278,7 +237,6 @@ document.querySelector('.modal-background').addEventListener('click', () => {
     document.getElementById('popupOverlay').style.display = 'none';
 });
 
-// Función para filtrar las comidas por categoría
 function filterComidasByCategory(category) {
     document.querySelectorAll('.category-button').forEach(btn => btn.classList.remove('is-selected'));
     const selectedButton = document.querySelector(`.category-button[data-category="${category}"]`);
@@ -288,15 +246,26 @@ function filterComidasByCategory(category) {
     renderComidas();
 }
 
-// Función para generar el menú automáticamente y agregar ingredientes al campo "Comprar en el super"
+function filterComidasBySearch(query) {
+    const comidasList = document.getElementById('comidasList');
+    comidasList.innerHTML = '';
+
+    window.comidas.forEach(comida => {
+        if (comida.nombre.toLowerCase().includes(query) || comida.categoria.toLowerCase().includes(query)) {
+            const comidaElement = renderComida(comida);
+            if (comidaElement) {
+                comidasList.appendChild(comidaElement);
+            }
+        }
+    });
+}
+
 function generateMenu() {
     const weekdays = ['lunes_almuerzo', 'lunes_cena', 'martes_almuerzo', 'martes_cena', 'miercoles_almuerzo', 'miercoles_cena', 'jueves_almuerzo', 'jueves_cena', 'viernes_almuerzo', 'viernes_cena'];
     const planInputs = weekdays.map(day => document.querySelector(`input[name="${day}"]`));
     
-    // Limpiar los campos existentes
     planInputs.forEach(input => input.value = '');
 
-    // Mezclar las comidas aleatoriamente y asignarlas a los campos
     const shuffledComidas = [...window.comidas].sort(() => Math.random() - 0.5);
     const ingredientsToBuy = [];
 
@@ -314,4 +283,77 @@ function generateMenu() {
 
     const comprarSuperTextarea = document.getElementById('comprar_super');
     comprarSuperTextarea.value = ingredientsToBuy.join('\n');
+}
+
+function showEditMealPopup(day, meal) {
+    const popup = document.getElementById('popupOverlay');
+    popup.style.display = 'block';
+    
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const comidasOptions = document.getElementById('comidasOptions');
+    const ingredientList = document.getElementById('ingredientList');
+    ingredientList.innerHTML = '';
+    comidasOptions.innerHTML = '';
+
+    window.comidas.forEach(comida => {
+        const optionElement = document.createElement('div');
+        optionElement.classList.add('field');
+        optionElement.innerHTML = `
+            <label class="radio">
+                <input type="radio" name="selectedComida" value="${comida.nombre}" data-ingredientes="${comida.ingredientes}">
+                ${comida.nombre}
+            </label>
+        `;
+        comidasOptions.appendChild(optionElement);
+    });
+
+    step1.style.display = 'block';
+    step2.style.display = 'none';
+
+    document.getElementById('nextStep').addEventListener('click', () => {
+        const selectedComida = document.querySelector('input[name="selectedComida"]:checked');
+        if (selectedComida) {
+            const ingredientes = selectedComida.getAttribute('data-ingredientes');
+            const ingredientsArray = ingredientes.split(',').map(ingredient => ingredient.trim());
+
+            ingredientList.innerHTML = '';
+            ingredientsArray.forEach(ingredient => {
+                const ingredientItem = document.createElement('div');
+                ingredientItem.classList.add('field', 'is-grouped');
+                ingredientItem.innerHTML = `
+                    <div class="control">
+                        <label class="checkbox">
+                            <input type="checkbox" class="ingredient-checkbox" value="${ingredient}"> ${ingredient}
+                        </label>
+                    </div>
+                `;
+                ingredientList.appendChild(ingredientItem);
+            });
+
+            step1.style.display = 'none';
+            step2.style.display = 'block';
+        }
+    });
+
+    document.getElementById('addComida').addEventListener('click', () => {
+        const selectedComida = document.querySelector('input[name="selectedComida"]:checked').value;
+        addToPlan(`${day}_${meal}`, selectedComida);
+
+        const selectedIngredients = document.querySelectorAll('.ingredient-checkbox:checked');
+        const ingredientsToBuy = Array.from(selectedIngredients).map(checkbox => checkbox.value);
+        const comprarSuperTextarea = document.getElementById('comprar_super');
+
+        const currentIngredients = comprarSuperTextarea.value.split('\n').map(ing => ing.trim()).filter(ing => ing !== '');
+        
+        ingredientsToBuy.forEach(ingredient => {
+            if (!currentIngredients.includes(ingredient)) {
+                currentIngredients.push(ingredient);
+            }
+        });
+
+        comprarSuperTextarea.value = currentIngredients.join('\n');
+
+        popup.style.display = 'none';
+    });
 }
