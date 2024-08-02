@@ -6,6 +6,13 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>Planificador de Comidas Semanal</title>
+    <!-- Incluir EmailJS -->
+    <script type="text/javascript" src="https://cdn.jsdelivr.net/npm/@emailjs/browser@3/dist/email.min.js"></script>
+    <script type="text/javascript">
+        (function() {
+            emailjs.init("su7bu8tVLFRR-ssfd"); // Public Key de EmailJS
+        })();
+    </script>
 </head>
 <body>
     <div class="container">
@@ -30,7 +37,6 @@
             </div>
         </form>
     </div>
-
     <div id="comidasContainer" class="container">
         <h2 class="title is-2 has-text-centered">Comidas de Planes Anteriores</h2>
         <div class="columns is-vcentered">
@@ -52,7 +58,6 @@
             <!-- Las comidas se generarán dinámicamente con JavaScript -->
         </div>
     </div>
-
     <div id="popupOverlay" class="modal">
         <div class="modal-background"></div>
         <div class="modal-content">
@@ -79,7 +84,6 @@
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
     </div>
-
     <div id="categoryPopup" class="modal">
         <div class="modal-background"></div>
         <div class="modal-content">
@@ -115,7 +119,6 @@
         </div>
         <button class="modal-close is-large" aria-label="close"></button>
     </div>
-
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="script.js"></script>
 </body>

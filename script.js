@@ -357,3 +357,64 @@ function showEditMealPopup(day, meal) {
         popup.style.display = 'none';
     });
 }
+
+// Envío de datos a EmailJS y guardado en la base de datos
+function sendData() {
+    const formData = new FormData(document.getElementById('mealPlanForm'));
+    const plan = {
+        lunes_almuerzo: formData.get('lunes_almuerzo'),
+        lunes_cena: formData.get('lunes_cena'),
+        martes_almuerzo: formData.get('martes_almuerzo'),
+        martes_cena: formData.get('martes_cena'),
+        miercoles_almuerzo: formData.get('miercoles_almuerzo'),
+        miercoles_cena: formData.get('miercoles_cena'),
+        jueves_almuerzo: formData.get('jueves_almuerzo'),
+        jueves_cena: formData.get('jueves_cena'),
+        viernes_almuerzo: formData.get('viernes_almuerzo'),
+        viernes_cena: formData.get('viernes_cena'),
+        comprar_super: formData.get('comprar_super'),
+    };
+
+    const emailData = {
+        service_id: 'service_0isjz8r',
+        template_id: 'template_oe1o3vo', // Reemplaza 'template_id' con el ID real de la plantilla de EmailJS
+        user_id: 'su7bu8tVLFRR-ssfd',
+        template_params: {
+            lunes_almuerzo: plan.lunes_almuerzo,
+            lunes_cena: plan.lunes_cena,
+            martes_almuerzo: plan.martes_almuerzo,
+            martes_cena: plan.martes_cena,
+            miercoles_almuerzo: plan.miercoles_almuerzo,
+            miercoles_cena: plan.miercoles_cena,
+            jueves_almuerzo: plan.jueves_almuerzo,
+            jueves_cena: plan.jueves_cena,
+            viernes_almuerzo: plan.viernes_almuerzo,
+            viernes_cena: plan.viernes_cena,
+            comprar_super: plan.comprar_super,
+            to_email: ['lucas.castillo@gmail.com', 'lucas.castillo@invera.com.ar'] // Incluye los destinatarios
+        }
+    };
+
+    emailjs.send(emailData.service_id, emailData.template_id, emailData.template_params)
+        .then(response => {
+            console.log('Email sent successfully!', response.status, response.text);
+        })
+        .catch(error => {
+            console.error('Error sending email:', error);
+        });
+
+    fetch('save_plan.php', {
+        method: 'POST',
+        headers: {
+            'Content-Type': 'application/json',
+        },
+        body: JSON.stringify(plan),
+    })
+    .then(response => response.json())
+    .then(data => {
+        console.log('Plan saved successfully!', data);
+    })
+    .catch(error => {
+        console.error('Error saving plan:', error);
+    });
+}
