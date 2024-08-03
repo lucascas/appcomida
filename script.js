@@ -359,6 +359,7 @@ function showEditMealPopup(day, meal) {
 }
 
 // Envío de datos a EmailJS y guardado en la base de datos
+// Envío de datos a EmailJS y guardado en la base de datos
 function sendData() {
     const formData = new FormData(document.getElementById('mealPlanForm'));
     const plan = {
@@ -374,6 +375,8 @@ function sendData() {
         viernes_cena: formData.get('viernes_cena'),
         comprar_super: formData.get('comprar_super'),
     };
+
+    console.log('Datos que se enviarán:', plan); // Verificar los datos que se enviarán
 
     const emailData = {
         service_id: 'service_0isjz8r',
@@ -412,7 +415,11 @@ function sendData() {
     })
     .then(response => response.json())
     .then(data => {
-        console.log('Plan saved successfully!', data);
+        if (data.error) {
+            console.error('Error saving plan:', data.error);
+        } else {
+            console.log('Plan saved successfully!', data);
+        }
     })
     .catch(error => {
         console.error('Error saving plan:', error);
