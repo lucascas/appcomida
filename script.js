@@ -4,37 +4,29 @@ document.addEventListener('DOMContentLoaded', () => {
 
     weekdays.forEach(day => {
         const dayCard = `
-            <div class="column is-one-fifth-tablet is-one-third-mobile">
-                <div class="day-card">
-                    <h2 class="subtitle">${day}</h2>
-                    <div class="field has-addons">
-                        <p class="control is-expanded">
-                            <label class="label">Almuerzo:</label>
-                            <input class="input" type="text" name="${day.toLowerCase()}_almuerzo">
-                        </p>
-                        <p class="control">
-                            <button class="button is-small is-info edit-meal" data-day="${day.toLowerCase()}" data-meal="almuerzo">
-                                <span class="icon is-small">
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                                <span>+ opciones</span>
-                            </button>
-                        </p>
-                    </div>
-                    <div class="field has-addons">
-                        <p class="control is-expanded">
-                            <label class="label">Cena:</label>
-                            <input class="input" type="text" name="${day.toLowerCase()}_cena">
-                        </p>
-                        <p class="control">
-                            <button class="button is-small is-info edit-meal" data-day="${day.toLowerCase()}" data-meal="cena">
-                                <span class="icon is-small">
-                                    <i class="fas fa-edit"></i>
-                                </span>
-                                <span>+ opciones</span>
-                            </button>
-                        </p>
-                    </div>
+            <div class="day-card">
+                <h2 class="subtitle">${day}</h2>
+                <div class="field has-addons">
+                    <p class="control is-expanded">
+                        <label class="label">Almuerzo:</label>
+                        <input class="input" type="text" name="${day.toLowerCase()}_almuerzo">
+                    </p>
+                    <p class="control">
+                        <button class="button is-small is-info edit-meal" data-day="${day.toLowerCase()}" data-meal="almuerzo">
+                            <img src="edit-05.svg" class="edit-icon" alt="Editar">
+                        </button>
+                    </p>
+                </div>
+                <div class="field has-addons">
+                    <p class="control is-expanded">
+                        <label class="label">Cena:</label>
+                        <input class="input" type="text" name="${day.toLowerCase()}_cena">
+                    </p>
+                    <p class="control">
+                        <button class="button is-small is-info edit-meal" data-day="${day.toLowerCase()}" data-meal="cena">
+                            <img src="edit-05.svg" class="edit-icon" alt="Editar">
+                        </button>
+                    </p>
                 </div>
             </div>
         `;
@@ -358,7 +350,6 @@ function showEditMealPopup(day, meal) {
     });
 }
 
-// Envío de datos a EmailJS y guardado en la base de datos
 // Envío de datos a EmailJS y guardado en la base de datos
 function sendData() {
     const formData = new FormData(document.getElementById('mealPlanForm'));

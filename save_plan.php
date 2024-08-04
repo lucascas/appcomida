@@ -5,13 +5,21 @@ ini_set('display_errors', 1);
 ini_set('display_startup_errors', 1);
 error_reporting(E_ALL);
 
+// Conexión a la base de datos local
 $servername = "localhost";
 $username = "root";
 $password = "";
 $dbname = "meal_planner";
-
-// Crear conexión
 $conn = new mysqli($servername, $username, $password, $dbname);
+
+// Conexión a la base de datos servidor
+/* $servername = "sql105.infinityfree.com";
+$username = "if0_36943803";
+$password = "9HiF8jHuRJqHZsj";
+$dbname = "if0_36943803_comidassemanales";
+$conn = new mysqli("sql105.infinityfree.com", "if0_36943803", "9HiF8jHuRJqHZsj", "if0_36943803_comidassemanales");
+*/
+// Crear conexión
 
 // Verificar conexión
 if ($conn->connect_error) {

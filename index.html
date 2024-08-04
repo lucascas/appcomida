@@ -15,20 +15,21 @@
     </script>
 </head>
 <body>
-    <div class="container">
-        <h1 id="planificador-de-comidas-semanal" class="title is-1 has-text-centered">Planificador de Comidas Semanal</h1>
+    <div class="contenedor encabezado">
+        <div class="header">
+            <span class="greeting">¡Hola!</span>
+            <img src="Users.svg" class="user-icon" alt="Usuario">
+        </div>
+    <h1 id="planificador-de-comidas-semanal" class="title">Preparemos el menú de esta semana!</h1>
+    </div>
+
+    <div class="container">            
         <div class="has-text-centered">
-            <button id="generateMenuButton" class="button is-primary">Generar Menú Automáticamente</button>
+            <button id="generateMenuButton" class="button is-primary">Generar automáticamente</button>
         </div>
         <form id="mealPlanForm">
-            <div id="weekdays" class="columns is-multiline is-centered">
+            <div id="weekdays" class="weekdays">
                 <!-- Los días de la semana se generarán dinámicamente con JavaScript -->
-            </div>
-            <div class="field">
-                <label class="label">Comprar en el super:</label>
-                <div class="control">
-                    <textarea id="comprar_super" name="comprar_super" class="textarea"></textarea>
-                </div>
             </div>
             <div class="field">
                 <div class="control">
@@ -38,7 +39,7 @@
         </form>
     </div>
     <div id="comidasContainer" class="container">
-        <h2 class="title is-2 has-text-centered">Comidas de Planes Anteriores</h2>
+        <h2 class="title has-text-centered">Comidas de Planes Anteriores</h2>
         <div class="columns is-vcentered">
             <div class="column">
                 <input type="text" id="searchComidas" class="input" placeholder="Buscar comida...">

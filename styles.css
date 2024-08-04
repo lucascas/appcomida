@@ -10,13 +10,48 @@ body {
     min-height: 100vh;
 }
 
-.container {
+/*.container {
     background-color: rgba(252, 252, 252, 0.9);
     padding: 2rem;
     border-radius: 15px;
-    margin-top: 2rem;
     margin-bottom: 2rem;
     box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
+}*/
+
+.contenedor.encabezado{
+    flex-grow: 1;
+    margin: 0 auto;
+    position: relative;
+    width: auto;
+    padding: 20px;
+    background: white;
+    box-shadow: 0 4px 6px rgba(10, 10, 10, 0.1);
+}
+
+.contenedor.encabezado .title{
+    margin: 30px 0px 0px 0;
+}
+.container {
+    padding: 2rem;
+    margin-bottom: 2rem;
+}
+
+
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1rem;
+}
+
+.greeting {
+    font-size: 1.2rem;
+    color: #333;
+}
+
+.user-icon {
+    width: 32px;
+    height: 32px;
 }
 
 .day-card {
@@ -33,21 +68,25 @@ body {
     box-shadow: 0 6px 8px rgba(10, 10, 10, 0.15);
 }
 
-.input, .textarea, .button {
-    border-radius: 8px;
+.day-card .field.has-addons p.control.is-expanded .input, .textarea, .button {
+    border-radius: 10px;
 }
 
 .button.is-primary {
-    background-color: #00d1b2;
+    background-color: #4caf505e;
     transition: background-color 0.3s ease;
+    border-radius: 30px;
 }
 
 .button.is-primary:hover {
     background-color: #00c4a7;
 }
 
-#comidasContainer {
-    margin-top: 3rem;
+.weekdays {
+    margin-top: 1rem;
+    display: flex;
+    flex-direction: column;
+    gap: 0rem;
 }
 
 .card {
@@ -69,6 +108,10 @@ body {
 .add-to-plan {
     cursor: pointer;
 }
+
+/*.control{
+    text-align: center;
+}*/
 
 .categories-tree {
     display: flex;
@@ -107,6 +150,7 @@ body {
 
 .title {
     color: #363636;
+    font-weight: 100;
 }
 
 .subtitle {
@@ -188,4 +232,30 @@ body {
 
 .field.is-grouped {
     margin-bottom: 1rem;
+}
+/* Estilo para los botones de edición */
+.button.is-small.is-info.edit-meal {
+    background: none;
+    border: none;
+    padding: 0px;
+    margin-left: 0.5rem;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    margin-top: 30px;
+}
+
+.button.is-small.is-info.edit-meal .edit-icon {
+    width: 30px; /* Ajustar el tamaño del icono según sea necesario */
+    height: 30px;
+}
+
+/* Asegúrate de que el contenedor de los inputs y botones esté alineado */
+.field.has-addons {
+    display: flex;
+    align-items: center;
+}
+
+.input {
+    flex-grow: 1;
 }
