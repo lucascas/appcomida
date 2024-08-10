@@ -7,7 +7,7 @@
     $m = new MongoDB\Driver\Manager('mongodb+srv://lucascastillo:pvX2t2BGvw9oJeNJ@appcomidas.2naw1.mongodb.net/');
     echo "Connection to database successfully";
     // display the content of the driver, for diagnosis purpose
-    var_dump($m);
+    echo var_dump($m);
 }
 catch (Throwable $e) {
     // catch throwables when the connection is not a success
