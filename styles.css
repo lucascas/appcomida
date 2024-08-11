@@ -10,14 +10,6 @@ body {
     min-height: 100vh;
 }
 
-/*.container {
-    background-color: rgba(252, 252, 252, 0.9);
-    padding: 2rem;
-    border-radius: 15px;
-    margin-bottom: 2rem;
-    box-shadow: 0 8px 15px rgba(0, 0, 0, 0.1);
-}*/
-
 .contenedor.encabezado{
     flex-grow: 1;
     margin: 0 auto;
@@ -35,7 +27,6 @@ body {
     padding: 2rem;
     margin-bottom: 2rem;
 }
-
 
 .header {
     display: flex;
@@ -109,25 +100,41 @@ body {
     cursor: pointer;
 }
 
-/*.control{
-    text-align: center;
-}*/
-
-.categories-tree {
+.categories-carousel {
+    width: 100%;
+    margin: 0 auto;
+    padding: 10px 0;
     display: flex;
+    overflow: hidden;
+}
+
+.category-item {
+    width: 80px;       /* Ancho fijo de 80px */
+    height: 80px;      /* Altura fija de 80px */
+    flex: 0 0 80px;    /* Asegura que la caja no se redimensione */
+    margin-right: 10px;
+    border-radius: 10px;
+    display: flex !important;
+    align-items: center;
     justify-content: center;
-    flex-wrap: wrap;
-    margin-bottom: 2rem;
+    background-color: #f0f0f0;
+    transition: transform 0.2s ease-in-out;
+}
+
+.category-item:hover {
+    transform: scale(1.1);
 }
 
 .category-button {
-    margin: 0.5rem;
-    transition: all 0.3s ease;
-}
-
-.category-button:hover {
-    transform: translateY(-2px);
-    box-shadow: 0 4px 6px rgba(10, 10, 10, 0.1);
+    width: 80px;       /* Ocupa todo el espacio del contenedor */
+    height: 80px;      /* Ocupa todo el espacio del contenedor */
+    border: none;
+    background: none;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-size: 14px;
+    text-align: center;
 }
 
 .edit-category {
@@ -233,6 +240,7 @@ body {
 .field.is-grouped {
     margin-bottom: 1rem;
 }
+
 /* Estilo para los botones de edición */
 .button.is-small.is-info.edit-meal {
     background: none;
@@ -258,4 +266,9 @@ body {
 
 .input {
     flex-grow: 1;
+}
+
+.textarea {
+    resize: vertical;
+    min-height: 100px;
 }

@@ -209,84 +209,59 @@ Hola COpilot,
 
 por favor asumir el rol de un programador con un alto grado de seniority y corrige estos archivos de modo que se cumplan las siguientes condiciones:
 
-1) Al finalizar el armado del menú y hacer click en el botón "Enviar planificacion" se debe enviar un correo electronico usando el servicio de EmailJS con el siguiente cuerpo:
-
-Lunes:
-Almuerzo:
-Cena:
-
-
-Martes:
-Almuerzo:
-Cena:
-
-
-Miércoles:
-Almuerzo:
-Cena:
-
-Jueves:
-Almuerzo:
-Cena:
-
-
-Viernes:
-Almuerzo:
-Cena:
-
-
-Comprar en el super:
-
-Los datos, deben ser enviados desde nuestro lado y ser recibidos por EmailJS
-las credenciales de Email js son las siguientes:
-
-Public Key: su7bu8tVLFRR-ssfd
-Service ID: service_0isjz8r
-Email template: 
-
-Los mails de destino son: lucas.castillo@gmail.com y lucas.castillo@invera.com.ar
-
-2) Se debe almacenar la información del menú en la base de datos.
-
-Los datos de acceso son:
-$servername = "localhost";
-$username = "root";
-$password = "";
-$dbname = "meal_planner";
-
-Dentro de la base de datos hay dos tablas:
-"comidas": donde se almacenan las comidas que se agregan en el formulario de "planificador de comida semanal".
-
-Estructura:
-id
-nombre
-categoría
-ingredientes
-
-"weekly_plans": donde se almacenan los planes semanales (una linea por plan semanal)
-Estructura:
-id
-lunes_almuerzo
-lunes_cena
-martes_almuerzo
-martes_cena
-miercoles_almuerzo
-miercoles_cena
-jueves_almuerzo
-jueves_cena
-viernes_almuerzo
-viernes_cena
-created_at
-comprar_super
-fecha_creación
-categoria
-plan
-
-en base a estos dos puntos, corregir los archivos y mostrarme cada archivo corregido y completo.
+- se debe agrear un campo antes del botón planificacion que se llame "comprar en el supermercado"
+- En este campo, se deben agregar los ingredientes de las comidas una vez que se agregaron al día deseado.
+- Este campo debe ser enviado junto al resto de la información al momento de hacer click en "enviar planificacion" siguiende la misma logica de conexion que viene teniendo ahora.
 
 
 
+Hola COpilot,
 
-por favor asumir el rol de un programador con un alto grado de seniority y adaptar el diseño actual de la sección "planificador de comidas semanal" al adjunto en el PNG.
-El icono utilizado esta adjunto
+por favor asumir el rol de un programador con un alto grado de seniority y corrige estos archivos de modo que se cumplan las siguientes condiciones:
 
+- al pedido anterior por favor agregar:
+-- Cuando selecciono la comida (almuerzo o cena) me va aparecerá un botón que indique siguiente, que pasará al proximo paso que mostrará los ingredientes de esa comida, listado con formato checkbox que me permita seleccionar los ingredientes y un botón que indique "agregar". Al hacer click en ese botón el plato se agregará al correspondiente día y los ingredientes se agregarán al campo "comprar en el supermercado"
+
+Condiciones:
+Ninguna funcionalidad existente se debe tocar
+
+
+Hola COpilot,
+
+por favor asumir el rol de un programador con un alto grado de seniority y corrige estos archivos de modo que se cumplan las siguientes condiciones:
+
+En la sección de Filtros de "Comidas de Planes Anteriores" por favor cambiar el diseño:
+
+- Debe ser formato carrousell, el tamaño de las cajas debe ser de: 80px por 80 px.
+- El carrousell debe poder desplazarse de costados
+
+Condiciones:
+Ninguna funcionalidad existente se debe tocar
+
+
+Hola COpilot,
+
+por favor asumir el rol de un programador con un alto grado de seniority y corrige estos archivos de modo que se cumplan las siguientes condiciones:
+
+En la sección donde preparamos el menú de esta semana (donde estan todos los días) en el pop up que se abre al querer editar uno de los días por favor realizar las siguientes acciones:
+- El popup debe ocupar todo el ancho y alto de la pantalla
+- Debe estar dividido en dos pasos:
+
+Paso 1
+-- Titulo: Paso 1: Seleccionar plato
+-- mostrar el carrousel de filtros que armamos anteriormente
+-- agregar un titulo debajo que diga "Plato"
+-- agregar una linea de un pixel de ancho color gris claro
+-- Listar todos los platos y aplicar el filtro en caso que se seleccione.
+-- Agregar un boton debajo de todo que diga "Siguiente"
+
+Paso 2
+-- Titulo: Paso 2: Agregar ingredientes
+-- listar todos los ingredientes del plato seleccionado.
+-- Si se seleccionan, se agregarán al cuadro "comprar en el supermercado". Si hay ingredientes que ya han sido agregados, no se deben repetir.
+-- Agregar un botón que diga "agregar plato"
+-- Al hacer click en este botón, se agregará el plato al día desde donde se esté editando.
+
+Condiciones:
+Ninguna funcionalidad existente se debe tocar
+mostrar los archivos con los cambios implementados.

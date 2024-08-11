@@ -64,6 +64,35 @@ document.addEventListener('DOMContentLoaded', () => {
         const query = this.value.toLowerCase();
         filterComidasBySearch(query);
     });
+
+    // Inicializar el carrusel con Slick
+    $(document).ready(function(){
+        $('.categories-carousel').slick({
+            infinite: false,             // No hacer un loop infinito
+            slidesToShow: 3,             // Número de slides visibles al mismo tiempo
+            slidesToScroll: 1,           // Número de slides que se mueven con cada scroll
+            arrows: true,                // Mostrar las flechas de navegación
+            dots: true,                 // Ocultar puntos de paginación
+            variableWidth: true,         // Permitir slides con diferentes anchos
+            responsive: [
+                {
+                    breakpoint: 768,     // Configuración para pantallas medianas
+                    settings: {
+                        slidesToShow: 2,
+                        slidesToScroll: 1,
+                        infinite: false
+                    }
+                },
+                {
+                    breakpoint: 480,     // Configuración para pantallas pequeñas
+                    settings: {
+                        slidesToShow: 1,
+                        slidesToScroll: 1
+                    }
+                }
+            ]
+        });
+    });
 });
 
 function renderComida(comida) {
@@ -82,15 +111,17 @@ function renderComida(comida) {
             </div>
             <footer class="card-footer">
                 <div class="card-footer-item">
-                    <button class="button is-primary add-to-plan" data-ingredientes="${comida.ingredientes}">Agregar al plan</button>
+                    <button class="button is-primary add-to-plan" data-comida-nombre="${comida.nombre}" data-ingredientes="${comida.ingredientes}">Agregar al plan</button>
                     <button class="button is-info edit-category" data-comida-id="${comida.id}">Editar categoría</button>
                 </div>
             </footer>
         </div>
     `;
 
-    comidaElement.querySelector('.add-to-plan').addEventListener('click', () => {
-        showPopupForComida(comida.nombre, comida.ingredientes);
+    comidaElement.querySelector('.add-to-plan').addEventListener('click', (event) => {
+        const comidaNombre = event.target.getAttribute('data-comida-nombre');
+        const ingredientes = event.target.getAttribute('data-ingredientes');
+        showPlanSelectionPopup(comidaNombre, ingredientes);
     });
 
     comidaElement.querySelector('.edit-category').addEventListener('click', () => {
@@ -98,6 +129,97 @@ function renderComida(comida) {
     });
 
     return comidaElement;
+}
+
+function showPlanSelectionPopup(comidaNombre, ingredientes) {
+    const popup = document.getElementById('popupOverlay');
+    popup.style.display = 'block';
+
+    const step1 = document.getElementById('step1');
+    const step2 = document.getElementById('step2');
+    const comidasOptions = document.getElementById('comidasOptions');
+    const ingredientList = document.getElementById('ingredientList');
+    comidasOptions.innerHTML = '';
+    ingredientList.innerHTML = '';
+
+    const weekdays = ['Lunes', 'Martes', 'Miercoles', 'Jueves', 'Viernes'];
+
+    weekdays.forEach(day => {
+        const optionElement = document.createElement('div');
+        optionElement.classList.add('field');
+        optionElement.innerHTML = `
+            <label class="radio">
+                <input type="radio" name="menuSlot" value="${day.toLowerCase()}_almuerzo">
+                ${day} - Almuerzo
+            </label>
+            <label class="radio">
+                <input type="radio" name="menuSlot" value="${day.toLowerCase()}_cena">
+                ${day} - Cena
+            </label>
+        `;
+        comidasOptions.appendChild(optionElement);
+    });
+
+    step1.style.display = 'block';
+    step2.style.display = 'none';
+
+    document.getElementById('nextStep').style.display = 'inline-block';
+    document.getElementById('nextStep').onclick = () => {
+        step1.style.display = 'none';
+        step2.style.display = 'block';
+        showIngredientSelection(ingredientes);
+    };
+
+    document.getElementById('addComida').onclick = () => {
+        const selectedSlot = document.querySelector('input[name="menuSlot"]:checked');
+        if (selectedSlot) {
+            addToPlan(selectedSlot.value, comidaNombre);
+            addIngredientsToSupermarketList();
+        }
+        popup.style.display = 'none';
+    };
+}
+
+function showIngredientSelection(ingredientes) {
+    const ingredientList = document.getElementById('ingredientList');
+    ingredientList.innerHTML = '';
+
+    const ingredientsArray = ingredientes.split(',').map(ingredient => ingredient.trim());
+    ingredientsArray.forEach(ingredient => {
+        const ingredientItem = document.createElement('div');
+        ingredientItem.classList.add('field', 'is-grouped');
+        ingredientItem.innerHTML = `
+            <div class="control">
+                <label class="checkbox">
+                    <input type="checkbox" class="ingredient-checkbox" value="${ingredient}"> ${ingredient}
+                </label>
+            </div>
+        `;
+        ingredientList.appendChild(ingredientItem);
+    });
+}
+
+function addIngredientsToSupermarketList() {
+    const selectedIngredients = document.querySelectorAll('.ingredient-checkbox:checked');
+    const ingredientsToBuy = Array.from(selectedIngredients).map(checkbox => checkbox.value);
+    const comprarSuperTextarea = document.getElementById('comprar_super');
+
+    const currentIngredients = comprarSuperTextarea.value.split('\n').map(ing => ing.trim()).filter(ing => ing !== '');
+    
+    ingredientsToBuy.forEach(ingredient => {
+        if (!currentIngredients.includes(ingredient)) {
+            currentIngredients.push(ingredient);
+        }
+    });
+
+    comprarSuperTextarea.value = currentIngredients.join('\n');
+}
+
+function addToPlan(slot, comida) {
+    const input = document.querySelector(`input[name="${slot}"]`);
+    if (input) {
+        input.value = comida;
+    }
 }
 
 function loadComidas() {
@@ -128,68 +250,6 @@ function renderComidas() {
             }
         }
     });
-}
-
-function showPopupForComida(comida, ingredientes) {
-    const popup = document.getElementById('popupOverlay');
-    popup.style.display = 'block';
-    
-    const step1 = document.getElementById('step1');
-    const step2 = document.getElementById('step2');
-    const ingredientList = document.getElementById('ingredientList');
-    ingredientList.innerHTML = '';
-
-    const ingredientsArray = ingredientes.split(',').map(ingredient => ingredient.trim());
-    ingredientsArray.forEach(ingredient => {
-        const ingredientItem = document.createElement('div');
-        ingredientItem.classList.add('field', 'is-grouped');
-        ingredientItem.innerHTML = `
-            <div class="control">
-                <label class="checkbox">
-                    <input type="checkbox" class="ingredient-checkbox" value="${ingredient}"> ${ingredient}
-                </label>
-            </div>
-        `;
-        ingredientList.appendChild(ingredientItem);
-    });
-
-    step1.style.display = 'block';
-    step2.style.display = 'none';
-
-    document.getElementById('nextStep').addEventListener('click', () => {
-        step1.style.display = 'none';
-        step2.style.display = 'block';
-    });
-
-    document.getElementById('addComida').addEventListener('click', () => {
-        const selectedSlot = document.querySelector('input[name="menuSlot"]:checked');
-        if (selectedSlot) {
-            addToPlan(selectedSlot.value, comida);
-        }
-
-        const selectedIngredients = document.querySelectorAll('.ingredient-checkbox:checked');
-        const ingredientsToBuy = Array.from(selectedIngredients).map(checkbox => checkbox.value);
-        const comprarSuperTextarea = document.getElementById('comprar_super');
-
-        const currentIngredients = comprarSuperTextarea.value.split('\n').map(ing => ing.trim()).filter(ing => ing !== '');
-        
-        ingredientsToBuy.forEach(ingredient => {
-            if (!currentIngredients.includes(ingredient)) {
-                currentIngredients.push(ingredient);
-            }
-        });
-
-        comprarSuperTextarea.value = currentIngredients.join('\n');
-
-        popup.style.display = 'none';
-    });
-}
-
-function addToPlan(slot, comida) {
-    const input = document.querySelector(`input[name="${slot}"]`);
-    if (input) {
-        input.value = comida;
-    }
 }
 
 function showCategoryPopup(comidaId) {

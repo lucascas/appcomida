@@ -13,6 +13,11 @@
             emailjs.init("su7bu8tVLFRR-ssfd"); // Public Key de EmailJS
         })();
     </script>
+    <!-- Incluir jQuery -->
+    <script src="https://code.jquery.com/jquery-3.6.0.min.js"></script>
+    <!-- Incluir Slick Carousel -->
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.css"/>
+    <link rel="stylesheet" type="text/css" href="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick-theme.min.css"/>
 </head>
 <body>
     <div class="contenedor encabezado">
@@ -20,7 +25,7 @@
             <span class="greeting">¡Hola!</span>
             <img src="Users.svg" class="user-icon" alt="Usuario">
         </div>
-    <h1 id="planificador-de-comidas-semanal" class="title">vamos a Preparemos el menú de esta semana!</h1>
+    <h1 id="planificador-de-comidas-semanal" class="title">¡Preparemos el menú de esta semana!</h1>
     </div>
 
     <div class="container">            
@@ -30,6 +35,12 @@
         <form id="mealPlanForm">
             <div id="weekdays" class="weekdays">
                 <!-- Los días de la semana se generarán dinámicamente con JavaScript -->
+            </div>
+            <div class="field">
+                <label class="label">Comprar en el supermercado:</label>
+                <div class="control">
+                    <textarea id="comprar_super" name="comprar_super" class="textarea" placeholder="Lista de ingredientes para comprar"></textarea>
+                </div>
             </div>
             <div class="field">
                 <div class="control">
@@ -44,15 +55,25 @@
             <div class="column">
                 <input type="text" id="searchComidas" class="input" placeholder="Buscar comida...">
             </div>
-            <div class="column">
-                <div class="categories-tree">
-                    <button class="button category-button" data-category="Ver Todos">Ver Todos</button>
-                    <button class="button category-button" data-category="Carnes">Carnes</button>
-                    <button class="button category-button" data-category="Pollo">Pollo</button>
-                    <button class="button category-button" data-category="Pescado">Pescado</button>
-                    <button class="button category-button" data-category="Pastas">Pastas</button>
-                    <button class="button category-button" data-category="Vegetariano">Vegetariano</button>
-                </div>
+        </div>
+        <div class="categories-carousel">
+            <div class="category-item">
+                <button class="category-button" data-category="Ver Todos">Ver Todos</button>
+            </div>
+            <div class="category-item">
+                <button class="category-button" data-category="Carnes">Carnes</button>
+            </div>
+            <div class="category-item">
+                <button class="category-button" data-category="Pollo">Pollo</button>
+            </div>
+            <div class="category-item">
+                <button class="category-button" data-category="Pescado">Pescado</button>
+            </div>
+            <div class="category-item">
+                <button class="category-button" data-category="Pastas">Pastas</button>
+            </div>
+            <div class="category-item">
+                <button class="category-button" data-category="Vegetariano">Vegetariano</button>
             </div>
         </div>
         <div id="comidasList" class="columns is-multiline">
@@ -122,5 +143,6 @@
     </div>
     <script src="https://kit.fontawesome.com/a076d05399.js"></script>
     <script src="script.js"></script>
+    <script type="text/javascript" src="https://cdnjs.cloudflare.com/ajax/libs/slick-carousel/1.8.1/slick.min.js"></script>
 </body>
 </html>
